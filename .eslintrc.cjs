@@ -65,6 +65,14 @@ const enabledRuleParameters = {
   'spaced-comment': [`always`],
   'template-curly-spacing': [],
 
+  // eslint-plugin-import
+  'import/extensions': [`ignorePackages`],
+  'import/no-commonjs': [{ allowConditionalRequire: false }],
+  'import/no-dynamic-require': [],
+  'import/no-unresolved': [{
+    ignore: [`^fs/promises$`],
+  }],
+
   // eslint-plugin-jsdoc
   'jsdoc/check-alignment': [],
   'jsdoc/check-indentation': [],
@@ -205,6 +213,7 @@ const warnRules = new Set([
 
 const disabledRules = [
   `no-console`,
+  `import/no-duplicates`,
   `jsdoc/newline-after-description`,
   `jsdoc/no-undefined-types`,
   `jsdoc/require-description`,
@@ -216,6 +225,7 @@ const disabledRules = [
   `security/detect-object-injection`,
   `unicorn/consistent-function-scoping`,
   `unicorn/filename-case`,
+  `unicorn/import-index`,
   `unicorn/no-abusive-eslint-disable`,
   `unicorn/no-null`,
   `unicorn/no-process-exit`,
@@ -242,6 +252,7 @@ module.exports = {
   },
   plugins: [
     `array-func`,
+    `import`,
     `jsdoc`,
     `json`,
     `markdown`,
@@ -254,6 +265,7 @@ module.exports = {
   extends: [
     `eslint:recommended`,
     `plugin:array-func/all`,
+    `plugin:import/recommended`,
     `plugin:jsdoc/recommended`,
     `plugin:json/recommended`,
     `plugin:nuxt/recommended`,
@@ -303,6 +315,12 @@ module.exports = {
         'no-undef': `off`,
         'no-unused-vars': `off`,
         'require-jsdoc': `off`,
+      },
+    },
+    {
+      files: [`**/*.cjs`],
+      rules: {
+        'import/no-commonjs': `off`,
       },
     },
     {
