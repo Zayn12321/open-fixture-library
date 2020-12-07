@@ -1,5 +1,3 @@
-import path from 'path';
-
 import plugins from './plugins/plugins.json';
 import register from './fixtures/register.json';
 import { fixtureFromRepository } from './lib/model.js';
@@ -34,15 +32,14 @@ export default {
   build: {
     extend(config, context) {
       // exclude /assets/icons from url-loader
+      const iconsPath = new URL(`ui/assets/icons/`, import.meta.url).pathname;
       const urlLoader = config.module.rules.find(rule => `use` in rule && rule.use[0].loader === `url-loader`);
-      urlLoader.exclude = path.resolve(__dirname, `ui/assets/icons`);
+      urlLoader.exclude = iconsPath;
 
       // include /assets/icons for svg-inline-loader
       config.module.rules.push({
         test: /\.svg$/,
-        include: [
-          path.resolve(__dirname, `ui/assets/icons`),
-        ],
+        include: [iconsPath],
         loader: `svg-inline-loader`,
         options: {
           removeSVGTagAttrs: false,

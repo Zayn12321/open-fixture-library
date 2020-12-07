@@ -1,8 +1,8 @@
-const https = require(`https`);
-const Ajv = require(`ajv`);
-const getAjvErrorMessages = require(`../../../lib/get-ajv-error-messages.js`);
+import https from 'https';
+import Ajv from 'ajv';
+import getAjvErrorMessages from '../../../lib/get-ajv-error-messages.js';
+import { supportedOflVersion as SUPPORTED_OFL_VERSION } from '../export.js';
 
-const SUPPORTED_OFL_VERSION = require(`../export.js`).supportedOflVersion;
 const REPO_BASE_URL = `https://raw.githubusercontent.com/OpenLightingProject/open-fixture-library`;
 const SCHEMA_BASE_URL = `${REPO_BASE_URL}/schema-${SUPPORTED_OFL_VERSION}/schemas/`;
 const SCHEMA_FILES = [
@@ -33,7 +33,7 @@ const schemaPromises = getSchemas();
  * @param {Array.<ExportFile>} allExportFiles An array of all export files.
  * @returns {Promise.<undefined, Array.<String>|String>} Resolve when the test passes or reject with an array of errors or one error if the test fails.
  */
-module.exports = async function testJsonSchemaConformity(exportFile, allExportFiles) {
+export default async function testJsonSchemaConformity(exportFile, allExportFiles) {
   const schemas = await schemaPromises;
   const ajv = new Ajv({
     schemas,
@@ -51,7 +51,7 @@ module.exports = async function testJsonSchemaConformity(exportFile, allExportFi
   if (!schemaValid) {
     throw getAjvErrorMessages(schemaValidate.errors, `fixture`);
   }
-};
+}
 
 /**
  * @returns {Promise.<Array.<Object>>} Asynchronously downloaded and JSON parsed schemas.

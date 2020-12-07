@@ -1,14 +1,14 @@
 #!/usr/bin/node
 
-const path = require(`path`);
-const chalk = require(`chalk`);
-const childProcess = require(`child_process`);
+import chalk from 'chalk';
+import childProcess from 'child_process';
 
+const rootDirectory = new URL(`../`, import.meta.url).pathname;
 
 // run make unconditionally
 // (we can't rely on make's detection which builds are needed as git doesn't store the modification dates)
 try {
-  childProcess.execSync(`make --always-make --directory=${path.join(__dirname, `..`)}`);
+  childProcess.execSync(`make --always-make --directory=${rootDirectory}`);
 }
 catch (error) {
   console.error(chalk.red(`[FAIL]`), `Unable to run Makefile:`, error);
@@ -17,7 +17,7 @@ catch (error) {
 
 // check whether there are unstaged changes (probably created by running make before)
 const result = childProcess.spawnSync(`git diff --exit-code`, {
-  cwd: path.join(__dirname, `..`),
+  cwd: rootDirectory,
   shell: true,
   stdio: `inherit`,
 });

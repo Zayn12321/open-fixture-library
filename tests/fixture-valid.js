@@ -1,22 +1,22 @@
-const { inspect } = require(`util`);
-const Ajv = require(`ajv`);
+import { inspect } from 'util';
+import Ajv from 'ajv';
 
-const schemaProperties = require(`../lib/schema-properties.js`).default;
-const { manufacturerFromRepository, getResourceFromString } = require(`../lib/model.js`);
-const getAjvErrorMessages = require(`../lib/get-ajv-error-messages.js`);
-const importJson = require(`../lib/import-json.js`);
+import schemaProperties from '../lib/schema-properties.js';
+import { manufacturerFromRepository, getResourceFromString } from '../lib/model.js';
+import getAjvErrorMessages from '../lib/get-ajv-error-messages.js';
+import importJson from '../lib/import-json.js';
 
 /** @typedef {import('../lib/model/AbstractChannel.js').default} AbstractChannel */
 /** @typedef {import('../lib/model/Capability.js').default} Capability */
 /** @typedef {import('../lib/model/CoarseChannel.js').default} CoarseChannel */
-const { FineChannel } = require(`../lib/model.js`);
-const { Fixture } = require(`../lib/model.js`);
+import { FineChannel } from '../lib/model.js';
+import { Fixture } from '../lib/model.js';
 /** @typedef {import('../lib/model/Matrix.js').default} Matrix */
 /** @typedef {import('../lib/model/Meta.js').default} Meta */
-const { NullChannel } = require(`../lib/model.js`);
+import { NullChannel } from '../lib/model.js';
 /** @typedef {import('../lib/model/Physical.js').default} Physical */
 /** @typedef {import('../lib/model/TemplateChannel.js').default} TemplateChannel */
-const { SwitchingChannel } = require(`../lib/model.js`);
+import { SwitchingChannel } from '../lib/model.js';
 /** @typedef {import('../lib/model/Wheel.js').default} Wheel */
 
 const ajv = new Ajv({
@@ -43,12 +43,12 @@ let redirectSchemaValidate;
  * @param {UniqueValues|null} [uniqueValues=null] Values that have to be unique are checked and all new occurrences are appended.
  * @returns {Promise.<ResultData>} A Promise that resolves to the result object containing errors and warnings, if any.
  */
-async function checkFixture(manufacturerKey, fixtureKey, fixtureJson, uniqueValues = null) {
+export async function checkFixture(manufacturerKey, fixtureKey, fixtureJson, uniqueValues = null) {
   if (!initialized) {
-    register = await importJson(`../fixtures/register.json`, __dirname);
-    plugins = await importJson(`../plugins/plugins.json`, __dirname);
-    fixtureSchema = await importJson(`../schemas/dereferenced/fixture.json`, __dirname);
-    fixtureRedirectSchema = await importJson(`../schemas/dereferenced/fixture-redirect.json`, __dirname);
+    register = await importJson(`../fixtures/register.json`, import.meta.url);
+    plugins = await importJson(`../plugins/plugins.json`, import.meta.url);
+    fixtureSchema = await importJson(`../schemas/dereferenced/fixture.json`, import.meta.url);
+    fixtureRedirectSchema = await importJson(`../schemas/dereferenced/fixture-redirect.json`, import.meta.url);
 
     schemaValidate = ajv.compile(fixtureSchema);
     redirectSchemaValidate = ajv.compile(fixtureRedirectSchema);
@@ -1204,7 +1204,7 @@ async function checkFixture(manufacturerKey, fixtureKey, fixtureJson, uniqueValu
  * @param {ResultData} result The object to add the error message to (if any).
  * @param {String} messageIfNotUnique If the value is not unique, add this message to errors.
  */
-function checkUniqueness(set, value, result, messageIfNotUnique) {
+export function checkUniqueness(set, value, result, messageIfNotUnique) {
   if (set.has(value.toLowerCase())) {
     result.errors.push(messageIfNotUnique);
   }
@@ -1217,7 +1217,7 @@ function checkUniqueness(set, value, result, messageIfNotUnique) {
  * @param {*} error An error object to append to the message.
  * @returns {String} A string containing the message and a deep inspection of the given error object.
  */
-function getErrorString(description, error) {
+export function getErrorString(description, error) {
   if (typeof error === `string`) {
     return `${description} ${error}`;
   }
@@ -1241,10 +1241,3 @@ function arraysEqual(a, b) {
 
   return a.every((value, index) => value === b[index]);
 }
-
-
-module.exports = {
-  checkFixture,
-  checkUniqueness,
-  getErrorString,
-};

@@ -2,12 +2,12 @@
 
 // crypto is expected to be installed globally
 
-const crypto = require(`crypto`);
-const http = require(`http`);
-const { execSync } = require(`child_process`);
+import crypto from 'crypto';
+import http from 'http';
+import { readFile } from 'fs/promises';
+import { execSync } from 'child_process';
 
-const pm2config = require(`./ecosystem.config.js`);
-const secrets = require(`./ofl-secrets.json`);
+import pm2config from './ecosystem.config.js';
 
 const pm2AppConfig = pm2config.apps.find(app => app.name === `ofl`);
 
@@ -16,7 +16,6 @@ const deploymentConfig = {
   action: ``,
   webhookPort: 40_010,
   webhookPath: `/`,
-  webhookSecret: secrets.OFL_WEBHOOK_SECRET,
 };
 
 
@@ -62,14 +61,16 @@ function startServer() {
  * @param {String} body The JSON string from GitHub.
  * @param {Object.<String, String>} headers Headers of the request.
  */
-function processRequest(url, body, headers) {
+async function processRequest(url, body, headers) {
   console.log(`Received webhook request at ${url}`);
 
   if (deploymentConfig.webhookPath !== url) {
     return;
   }
 
-  const hmac = crypto.createHmac(`sha1`, deploymentConfig.webhookSecret);
+  const secrets = JSON.parse(await readFile(`./ofl-secrets.json`, `utf8`));
+
+  const hmac = crypto.createHmac(`sha1`, secrets.OFL_WEBHOOK_SECRET);
   hmac.update(body, `utf-8`);
 
   const xub = `X-Hub-Signature`;

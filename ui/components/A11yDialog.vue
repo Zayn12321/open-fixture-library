@@ -113,8 +113,6 @@ dialog.card {
 
 
 <script>
-const A11yDialog = process.browser ? require(`a11y-dialog`) : null;
-
 export default {
   props: {
     id: {
@@ -149,19 +147,18 @@ export default {
   watch: {
     shown: `update`,
   },
-  mounted() {
-    if (A11yDialog) {
-      this.dialog = new A11yDialog(this.$el, `#header, #fixture-editor > form`);
+  async mounted() {
+    const A11yDialog = await import(`a11y-dialog`);
+    this.dialog = new A11yDialog(this.$el, `#header, #fixture-editor > form`);
 
-      this.dialog.on(`show`, node => {
-        this.dialog.dialog.scrollTop = 0;
-        this.$emit(`show`);
-      });
+    this.dialog.on(`show`, node => {
+      this.dialog.dialog.scrollTop = 0;
+      this.$emit(`show`);
+    });
 
-      this.dialog.on(`hide`, node => this.$emit(`hide`));
+    this.dialog.on(`hide`, node => this.$emit(`hide`));
 
-      this.update();
-    }
+    this.update();
   },
   methods: {
     update() {

@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs */
+
 // pm2 is expected to be installed globally
 
 const secrets = require(`./ofl-secrets.json`);
