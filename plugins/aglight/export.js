@@ -1,7 +1,7 @@
 /* Based on the ofl export plugin */
 
 import fixtureJsonStringify from '../../lib/fixture-json-stringify.js';
-import namedColors from 'color-name-list';
+import { colorNameList as namedColors } from '../../lib/esm-shim.cjs';
 
 import { Entity, NullChannel } from '../../lib/model.js';
 import importJson from '../../lib/import-json.js';

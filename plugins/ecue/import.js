@@ -1,5 +1,6 @@
-import colorNameList from 'color-name-list';
 import xml2js from 'xml2js';
+
+import { colorNameList } from '../../lib/esm-shim.cjs';
 
 export const version = `0.3.1`;
 
