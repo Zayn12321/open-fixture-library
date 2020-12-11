@@ -124,7 +124,7 @@ async function getFixtureFeatures() {
 
     // module exports array of fix features
     const fixtureFeatureFileUrl = new URL(fileName, fixtureFeaturesDirectoryUrl);
-    const fixtureFeatureFile = await import(fixtureFeatureFileUrl);
+    const fixtureFeatureFile = (await import(fixtureFeatureFileUrl)).default;
 
     for (const [index, fixtureFeature] of fixtureFeatureFile.entries()) {
       // default id
