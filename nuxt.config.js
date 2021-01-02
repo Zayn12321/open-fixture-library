@@ -61,6 +61,7 @@ export default {
       });
     },
   },
+  createRequire: 'jiti', // see https://github.com/nuxt/nuxt.js/issues/6718#issuecomment-731443398
   render: {
     csp: {
       policies: {
