@@ -30,10 +30,22 @@ export default {
     `embetty-vue/dist/embetty-vue.css`,
   ],
   build: {
+    loaders: {
+      // condense whitespace in Vue templates
+      vue: {
+        compilerOptions: {
+          whitespace: `condense`,
+        },
+      },
+      // automatically `@use` global SCSS definitions
+      scss: {
+        additionalData: `@use "~/assets/styles/global.scss" as *;`,
+      },
+    },
     extend(config, context) {
       // exclude /assets/icons from url-loader
       const iconsPath = new URL(`ui/assets/icons/`, import.meta.url).pathname;
-      const urlLoader = config.module.rules.find(rule => `use` in rule && rule.use[0].loader === `url-loader`);
+      const urlLoader = config.module.rules.find(rule => rule.test.toString().includes(`|svg|`));
       urlLoader.exclude = iconsPath;
 
       // include /assets/icons for svg-inline-loader
@@ -45,23 +57,9 @@ export default {
           removeSVGTagAttrs: false,
         },
       });
-
-      // condense whitespace in Vue templates
-      const vueLoader = config.module.rules.find(rule => rule.loader === `vue-loader`);
-      vueLoader.options.compilerOptions = {
-        preserveWhitespace: false,
-        whitespace: `condense`,
-      };
-
-      // automatically `@use` global SCSS definitions
-      const scssRule = config.module.rules.find(rule => rule.test.toString() === `/\\.scss$/i`);
-      scssRule.oneOf.forEach(({ use }) => {
-        const sassLoader = use.find(({ loader }) => loader === `sass-loader`);
-        sassLoader.options.additionalData = `@use "~/assets/styles/global.scss" as *;`;
-      });
     },
   },
-  createRequire: 'jiti', // see https://github.com/nuxt/nuxt.js/issues/6718#issuecomment-731443398
+  createRequire: `jiti`, // see https://github.com/nuxt/nuxt.js/issues/6718#issuecomment-731443398
   render: {
     csp: {
       policies: {
