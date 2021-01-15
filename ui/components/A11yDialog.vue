@@ -148,7 +148,7 @@ export default {
     shown: `update`,
   },
   async mounted() {
-    const A11yDialog = await import(`a11y-dialog`);
+    const A11yDialog = (await import(`a11y-dialog`)).default;
     this.dialog = new A11yDialog(this.$el, `#header, #fixture-editor > form`);
 
     this.dialog.on(`show`, node => {
